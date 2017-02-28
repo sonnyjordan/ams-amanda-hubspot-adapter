@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,13 +29,14 @@ public class SubscriptionController {
     @RequestMapping(value = "/prescreening", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Object submitForm(@RequestBody ScheduleForPreScreeningJsonForm form) {
+    public Object submitForm(@RequestBody ScheduleForPreScreeningJsonForm [] form) {
+    	
+    	LOGGER.info("Process application form request for merchant:");
 
-        LOGGER.info("Process application form request for merchant:");
-
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("companyId", form.getObjectId());
+    	Map<String, Object> result = new HashMap<>();
+        result.put("companyId", form[0].getObjectId());
+    	
+        LOGGER.info("LENGTH: {}", form.length);
 
         return result;
     }
