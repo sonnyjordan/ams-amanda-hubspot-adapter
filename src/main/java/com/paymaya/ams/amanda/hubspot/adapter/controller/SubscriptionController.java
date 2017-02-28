@@ -27,9 +27,9 @@ public class SubscriptionController {
     @RequestMapping(value = "/prescreening", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Object submitForm(@Valid @RequestBody ScheduleForPreScreeningJsonForm form) {
+    public Object submitForm(@RequestBody ScheduleForPreScreeningJsonForm form) {
 
-        LOGGER.info("Process application form request for merchant: {}" , form.getObjectId());
+        LOGGER.info("Process application form request for merchant:");
 
 
         Map<String, Object> result = new HashMap<>();
