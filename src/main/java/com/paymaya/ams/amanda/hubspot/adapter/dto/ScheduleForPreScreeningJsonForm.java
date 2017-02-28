@@ -7,16 +7,16 @@ import lombok.Setter;
 @Setter
 public class ScheduleForPreScreeningJsonForm {
 	
-	private int eventId;
-	private int subscriptionId;
-	private int portalId;
-	private int appId;
-	private int occurredAt;
+	private long eventId;
+	private long subscriptionId;
+	private long portalId;
+	private long appId;
+	private long occurredAt;
 	private String subscriptionType;
-	private int objectId;
+	private long objectId;
 	private String propertyName;
 	private String propertyValue;
 	private String changeSource;
-	private int attemptNumber;
+	private long attemptNumber;
 
 }
