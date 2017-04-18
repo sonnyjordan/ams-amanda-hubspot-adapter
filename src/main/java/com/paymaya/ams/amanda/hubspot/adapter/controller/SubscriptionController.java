@@ -40,13 +40,7 @@ public class SubscriptionController {
     		
     	}
 
-
-
-    	Map<String, Object> result = new HashMap<>();
-        result.put("companyId", form[0].getObjectId());
-    	
-
-        return result;
+        return "hello";
     }
 }
 
