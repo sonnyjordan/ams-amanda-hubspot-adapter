@@ -14,12 +14,10 @@
 	</description>
 
 	<parent>
-		<groupId>com.smarthub.mpg</groupId>
-		<artifactId>mpg-commons-parent</artifactId>
-		<version>4.3-SNAPSHOT</version>
-		<relativePath /> <!-- lookup parent from repository -->
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-parent</artifactId>
+	    <version>1.5.2.RELEASE</version>
 	</parent>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
