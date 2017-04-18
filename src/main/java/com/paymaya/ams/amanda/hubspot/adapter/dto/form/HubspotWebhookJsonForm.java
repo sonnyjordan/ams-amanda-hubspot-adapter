@@ -1,11 +1,11 @@
-package com.paymaya.ams.amanda.hubspot.adapter.dto;
+package com.paymaya.ams.amanda.hubspot.adapter.dto.form;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ScheduleForPreScreeningJsonForm {
+public class HubspotWebhookJsonForm {
 	
 	private long eventId;
 	private long subscriptionId;

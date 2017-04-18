@@ -8,13 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.paymaya.ams.amanda.hubspot.adapter.dto.ScheduleForPreScreeningJsonForm;
+import com.paymaya.ams.amanda.hubspot.adapter.dto.form.HubspotWebhookJsonForm;
+import com.paymaya.ams.amanda.hubspot.adapter.dto.form.enums.HubspotCompanyProperty;
 
 @RestController
 @RequestMapping(value = "/hubspot")
@@ -22,17 +24,27 @@ public class SubscriptionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
-    @RequestMapping(value = "/prescreening", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Object submitForm(@RequestBody ScheduleForPreScreeningJsonForm [] form) {
+    public Object submitForm(@RequestBody HubspotWebhookJsonForm [] form, @RequestHeader(name = "X-HubSpot-Signature") String signature) {
     	
-    	LOGGER.info("Process application form request for merchant:");
+    	LOGGER.info("Process Webhook Subscription for Hub Spot Company with ID: {}", form[0].getObjectId());
+    	
+
+        LOGGER.info("signature: {}", signature);
+
+    	
+    	String propertyName = form[0].getPropertyName();
+    	
+    	if(propertyName.equals(HubspotCompanyProperty.SCHEDULE_FOR_PRE_SCREENING.getPropertyName())){
+    		
+    	}
+
+
 
     	Map<String, Object> result = new HashMap<>();
         result.put("companyId", form[0].getObjectId());
     	
-        LOGGER.info("LENGTH: {}", form.length);
 
         return result;
     }

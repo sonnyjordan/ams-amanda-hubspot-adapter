@@ -4,42 +4,38 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.paymaya.ams.amanda.hubspot.adapter</groupId>
-	<artifactId>ams-amanda-hubspot-adapter</artifactId>
+	<artifactId>ams-amanda-hubspot-adapter-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ams-amanda-hubspot-adapter</name>
-	<description>AMANDA Hubspot Adpater</description>
+	<name>ams-amanda-hubspot-adapter-service</name>
+	<description>
+		Automated Merchant Acquisition and Decision Analysis (AMANDA) - Compliance. Serves as the back-end platform of the Merchant On-boarding (CRM) tool in automating Merchant Pre-screening and Due Diligence.
+	</description>
 
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.smarthub.mpg</groupId>
+		<artifactId>mpg-commons-parent</artifactId>
+		<version>4.3-SNAPSHOT</version>
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web-services</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -48,13 +44,186 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>config/</directory>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mepay.maven.plugins</groupId>
+				<artifactId>mepay-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptor>src/assembly/boot-ctl.xml</descriptor>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.newrelic.agent.java</groupId>
+									<artifactId>newrelic-agent</artifactId>
+									<version>RELEASE</version>
+									<destFileName>newrelic.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
-	</build>
+  </build>
+
+	<profiles>
+		<profile>
+			<id>public-ip</id>
+			<properties>
+				<application.environment.host>54.255.194.209</application.environment.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>internal-ip</id>
+			<properties>
+				<application.environment.host>172.16.158.231</application.environment.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-aws</id>
+			<properties>
+				<application.environment.host>172.16.158.231</application.environment.host>
+				<application.environment.username>ec2-user</application.environment.username>
+				<application.environment.password />
+				<application.environment.keyfile>${user.home}/.ssh/id_rsa</application.environment.keyfile>
+				<application.environment.passphrase />
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>deploy</id>
+								<phase>verify</phase>
+								<configuration>
+									<target>
+
+										<echo message="Stopping ${project.build.finalName}..." />
+										<sshexec trust="true" host="${application.environment.host}" username="${application.environment.username}" keyfile="${application.environment.keyfile}" command="cd ~ &amp;&amp; cd ${project.build.finalName} &amp;&amp; ./${project.artifactId}-ctl.sh stop" />
+
+										<echo message="Creating ${project.build.finalName} directory..." />
+										<sshexec trust="true" host="${application.environment.host}" username="${application.environment.username}" keyfile="${application.environment.keyfile}" command="cd ~ &amp;&amp; test -e ${project.build.finalName}.tar.gz || mkdir -p ${project.build.finalName};cd ${project.build.finalName} &amp;&amp; test -e logs/ || mkdir logs; test -e config/ || mkdir config; test -e ${project.artifactId}-ctl.sh || touch ${project.artifactId}-ctl.sh" />
+
+										<echo message="Removing ${project.build.finalName}.tar.gz..." />
+										<sshexec trust="true" host="${application.environment.host}" username="${application.environment.username}" keyfile="${application.environment.keyfile}" command="cd ~ &amp;&amp; rm -rf ${project.build.finalName}.tar.gz" />
+
+										<echo message="Uploading ${project.build.finalName}.tar.gz..." />
+										<scp trust="true" localFile="${project.build.directory}/${project.build.finalName}.tar.gz" keyfile="${application.environment.keyfile}" passphrase="${application.environment.passphrase}" remoteTodir="${application.environment.username}@${application.environment.host}:~" />
+
+										<echo message="Removing old ${project.build.finalName} content except logs/..." />
+										<sshexec trust="true" host="${application.environment.host}" username="${application.environment.username}" keyfile="${application.environment.keyfile}" command="cd ~/${project.build.finalName} &amp;&amp; find * -maxdepth 0 -name 'logs' -prune -o -exec rm -rf {} +" />
+
+										<echo message="Finalizing ${project.build.finalName}..." />
+										<sshexec trust="true" host="${application.environment.host}" username="${application.environment.username}" keyfile="${application.environment.keyfile}" command="cd ~ &amp;&amp; tar -zxvf ${project.build.finalName}.tar.gz &amp;&amp; cd ${project.build.finalName} &amp;&amp; chmod +x ${project.artifactId}-ctl.sh &amp;&amp; ./${project.artifactId}-ctl.sh start" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant</artifactId>
+								<version>1.9.6</version>
+							</dependency>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.9.6</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>shi-local</id>
+			<name>PayMaya Maven Repository</name>
+			<url>http://repo.paymaya.io/nexus/content/groups/public</url>
+
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>shi-local</id>
+			<name>PayMaya Maven Repository</name>
+			<url>http://repo.paymaya.io/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 
 </project>
