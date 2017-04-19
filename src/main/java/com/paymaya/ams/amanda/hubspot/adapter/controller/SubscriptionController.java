@@ -27,7 +27,7 @@ public class SubscriptionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Object submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws NoSuchAlgorithmException {
     	
