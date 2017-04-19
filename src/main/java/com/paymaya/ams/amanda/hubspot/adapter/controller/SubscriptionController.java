@@ -3,7 +3,6 @@ package com.paymaya.ams.amanda.hubspot.adapter.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paymaya.ams.amanda.hubspot.adapter.dto.form.HubspotWebhookJsonForm;
 import com.paymaya.ams.amanda.hubspot.adapter.dto.form.enums.HubspotCompanyProperty;
-import org.apache.commons.codec.binary.Hex;
 
 @RestController
 @RequestMapping(value = "/hubspot")
@@ -40,13 +38,9 @@ public class SubscriptionController {
         String bodyAndSignature = body + signature;
 
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(bodyAndSignature.getBytes(StandardCharsets.UTF_8));
+        byte[] hash = digest.digest(bodyAndSignature.getBytes());
         
-        
-        LOGGER.info("hashed body and signature hex1: {}",Hex.encodeHex(hash));
-        
-        LOGGER.info("hashed body and signature hex2: {}",  javax.xml.bind.DatatypeConverter.printHexBinary(hash));
-        
+        LOGGER.info("hashed body and signature: {}", hash);
 
         return "hello";
     }
