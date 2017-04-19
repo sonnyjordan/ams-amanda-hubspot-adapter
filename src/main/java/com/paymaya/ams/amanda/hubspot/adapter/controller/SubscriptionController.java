@@ -34,15 +34,15 @@ public class SubscriptionController {
     	
     	verifySignature(body, signature);
     	
-    	ObjectMapper objectMapper = new ObjectMapper();
-    	
-    	HubspotWebhookJsonForm webhook = objectMapper.readValue(body, HubspotWebhookJsonForm.class);
-    	
-    	LOGGER.info("appId: {}", webhook.getAppId());
-    	
-    	LOGGER.info("portalId: {}", webhook.getPortalId());
-    	
-    	LOGGER.info("companyId: {}", webhook.getObjectId());
+//    	ObjectMapper objectMapper = new ObjectMapper();
+//    	
+//    	HubspotWebhookJsonForm webhook = objectMapper.readValue(body, HubspotWebhookJsonForm.class);
+//    	
+//    	LOGGER.info("appId: {}", webhook.getAppId());
+//    	
+//    	LOGGER.info("portalId: {}", webhook.getPortalId());
+//    	
+//    	LOGGER.info("companyId: {}", webhook.getObjectId());
 
     }
     
