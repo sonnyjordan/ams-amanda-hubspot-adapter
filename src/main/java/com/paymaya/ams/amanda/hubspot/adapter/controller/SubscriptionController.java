@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paymaya.ams.amanda.hubspot.adapter.dto.form.HubspotWebhookJsonForm;
 import com.paymaya.ams.amanda.hubspot.adapter.dto.form.enums.HubspotCompanyProperty;
+import org.apache.commons.codec.binary.Hex;
 
 @RestController
 @RequestMapping(value = "/hubspot")
@@ -41,9 +42,11 @@ public class SubscriptionController {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(bodyAndSignature.getBytes(StandardCharsets.UTF_8));
         
-        String all = Arrays.toString(hash);
         
-        LOGGER.info("hashed body and signature: {}", all);
+        LOGGER.info("hashed body and signature hex1: {}",Hex.encodeHex(hash));
+        
+        LOGGER.info("hashed body and signature hex2: {}",  javax.xml.bind.DatatypeConverter.printHexBinary(hash));
+        
 
         return "hello";
     }
