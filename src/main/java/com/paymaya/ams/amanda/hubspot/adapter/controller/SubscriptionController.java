@@ -3,6 +3,7 @@ package com.paymaya.ams.amanda.hubspot.adapter.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,9 @@ public class SubscriptionController {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(bodyAndSignature.getBytes(StandardCharsets.UTF_8));
         
-        LOGGER.info("hashed body and signature: {}", hash.toString());
+        String all = Arrays.toString(hash);
+        
+        LOGGER.info("hashed body and signature: {}", all);
 
         return "hello";
     }
