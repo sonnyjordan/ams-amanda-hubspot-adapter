@@ -31,16 +31,15 @@ public class SubscriptionController {
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void submitForm(@RequestBody HubspotWebhookJsonForm [] body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
-    	
-    	String hubspotWebhookJsonForm = JsonUtil.toJsonString(body);
-    	    	
-    	verifySignature(hubspotWebhookJsonForm, signature);
+    public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
+    	    	    	
+    	verifySignature(body, signature);
     	
     	LOGGER.info("Converting to HubspotWebhookJsonForm");
     	
+    	HubspotWebhookJsonForm [] hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm[].class, body);
     	
-
+    	LOGGER.info("" + hubspotWebhookJsonForm[0].getAppId());
 
     }
     
@@ -57,6 +56,9 @@ public class SubscriptionController {
         byte[] hashedValue = digest.digest(appSecretAndRequestBody.getBytes(StandardCharsets.UTF_8));
         
         String digestValue = DatatypeConverter.printHexBinary(hashedValue);
+        
+    	LOGGER.info("digestValue {} :", digestValue);
+
         
         if(!digestValue.equalsIgnoreCase(signature)){
         	
