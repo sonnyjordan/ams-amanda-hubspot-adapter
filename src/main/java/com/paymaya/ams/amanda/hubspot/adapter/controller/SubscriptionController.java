@@ -1,5 +1,8 @@
 package com.paymaya.ams.amanda.hubspot.adapter.controller;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,21 +27,20 @@ public class SubscriptionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Object submitForm(@RequestBody HubspotWebhookJsonForm [] form, @RequestHeader(name = "X-HubSpot-Signature") String signature) {
+    public Object submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws NoSuchAlgorithmException {
     	
-    	LOGGER.info("Process Webhook Subscription for Hub Spot Company with ID: {}", form[0].getObjectId());
-    	
+    	 LOGGER.info("body: {}", body);
 
         LOGGER.info("signature: {}", signature);
+        
+        String bodyAndSignature = body + signature;
 
-    	
-    	String propertyName = form[0].getPropertyName();
-    	
-    	if(propertyName.equals(HubspotCompanyProperty.SCHEDULE_FOR_PRE_SCREENING.getPropertyName())){
-    		
-    	}
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(bodyAndSignature.getBytes(StandardCharsets.UTF_8));
+        
+        LOGGER.info("hashed body and signature: {}", hash);
 
         return "hello";
     }
