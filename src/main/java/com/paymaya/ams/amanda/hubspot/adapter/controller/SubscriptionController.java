@@ -26,12 +26,12 @@ public class SubscriptionController {
 
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Object submitForm(@RequestBody HubspotWebhookJsonForm [] form) {
+    public Object submitForm(@RequestBody HubspotWebhookJsonForm [] form, @RequestHeader(name = "X-HubSpot-Signature") String signature) {
     	
     	LOGGER.info("Process Webhook Subscription for Hub Spot Company with ID: {}", form[0].getObjectId());
     	
 
-        //LOGGER.info("signature: {}", signature);
+        LOGGER.info("signature: {}", signature);
 
     	
     	String propertyName = form[0].getPropertyName();
