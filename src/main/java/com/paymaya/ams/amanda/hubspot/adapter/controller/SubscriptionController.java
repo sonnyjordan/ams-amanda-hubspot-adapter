@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymaya.ams.amanda.hubspot.adapter.dto.form.HubspotWebhookJsonForm;
+
 import javax.xml.bind.DatatypeConverter;
 
 @RestController
@@ -29,6 +33,16 @@ public class SubscriptionController {
     public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	
     	verifySignature(body, signature);
+    	
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	
+    	HubspotWebhookJsonForm webhook = objectMapper.readValue(body, HubspotWebhookJsonForm.class);
+    	
+    	LOGGER.info("appId: {}", webhook.getAppId());
+    	
+    	LOGGER.info("portalId: {}", webhook.getPortalId());
+    	
+    	LOGGER.info("companyId: {}", webhook.getObjectId());
 
     }
     
