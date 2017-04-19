@@ -29,17 +29,17 @@ public class SubscriptionController {
 
     String appSecret = "2edebaad-831e-40ea-9a20-e9c6a48ce18b";
     
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
+    public void submitForm(@RequestBody HubspotWebhookJsonForm body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	
-    	verifySignature(body, signature);
+    	String hubspotWebhookJsonForm = JsonUtil.toJsonString(body);
+    	    	
+    	verifySignature(hubspotWebhookJsonForm, signature);
     	
     	LOGGER.info("Converting to HubspotWebhookJsonForm");
     	
-    	HubspotWebhookJsonForm hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm.class, body);
     	
-    	LOGGER.info(hubspotWebhookJsonForm.getAppId() + "");
 
 
     }
