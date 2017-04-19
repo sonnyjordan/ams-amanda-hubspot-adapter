@@ -31,7 +31,7 @@ public class SubscriptionController {
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void submitForm(@RequestBody HubspotWebhookJsonForm body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
+    public void submitForm(@RequestBody HubspotWebhookJsonForm [] body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	
     	String hubspotWebhookJsonForm = JsonUtil.toJsonString(body);
     	    	
