@@ -33,7 +33,7 @@ public class SubscriptionController {
     @ResponseBody
     public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	    	    	
-    	verifySignature(body, signature);
+    	//verifySignature(body, signature);
     	
     	LOGGER.info("Converting to HubspotWebhookJsonForm");
     	
