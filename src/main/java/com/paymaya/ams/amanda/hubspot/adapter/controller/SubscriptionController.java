@@ -45,7 +45,7 @@ public class SubscriptionController {
     
     private void verifySignature(String body, String signature) throws Exception{
     	
-    	LOGGER.info("body: {}", body);
+    	LOGGER.info("body: {}", body );
    	 
         LOGGER.info("signature: {}", signature);
         
