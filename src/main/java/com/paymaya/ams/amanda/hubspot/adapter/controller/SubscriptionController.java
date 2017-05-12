@@ -42,6 +42,8 @@ public class SubscriptionController {
     	LOGGER.info("Converting to HubspotWebhookJsonForm");
     	
     	
+    	
+    	
     	HubspotWebhookJsonForm [] hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm[].class, body);
     	
     	LOGGER.info("" + hubspotWebhookJsonForm[0].getAppId());
