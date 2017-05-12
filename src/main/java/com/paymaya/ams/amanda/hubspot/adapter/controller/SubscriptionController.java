@@ -35,6 +35,10 @@ public class SubscriptionController {
     	    	    	
     	//verifySignature(body, signature);
     	
+    	LOGGER.info("body: {}", body );
+      	 
+        LOGGER.info("signature: {}", signature);
+    	
     	LOGGER.info("Converting to HubspotWebhookJsonForm");
     	
     	HubspotWebhookJsonForm [] hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm[].class, body);
