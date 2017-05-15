@@ -27,13 +27,13 @@ public class SubscriptionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
-    String appSecret = "2edebaad-831e-40ea-9a20-e9c6a48ce18b";
+    String appSecret = "edabbc61-ac48-46cb-9142-677de8a28dc4";
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	    	    	
-    	//verifySignature(body, signature);
+    	verifySignature(body, signature);
     	
     	
     	LOGGER.info("body: {}", body );
