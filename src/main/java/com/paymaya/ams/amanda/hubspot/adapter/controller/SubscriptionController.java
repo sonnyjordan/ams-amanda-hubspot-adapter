@@ -35,6 +35,7 @@ public class SubscriptionController {
     	    	    	
     	//verifySignature(body, signature);
     	
+    	
     	LOGGER.info("body: {}", body );
       	 
         LOGGER.info("signature: {}", signature);
