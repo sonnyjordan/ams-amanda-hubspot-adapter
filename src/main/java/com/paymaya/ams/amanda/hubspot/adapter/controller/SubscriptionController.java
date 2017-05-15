@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.Hashing;
 import com.paymaya.ams.amanda.hubspot.adapter.dto.form.HubspotWebhookJsonForm;
 import com.paymaya.ams.amanda.hubspot.adapter.util.JsonUtil;
 
@@ -32,8 +34,12 @@ public class SubscriptionController {
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
-    	    	    	
-    	verifySignature(body, signature);
+    	
+    	if (!verifySignature(body, signature)) {
+
+            LOGGER.info("Webhook Request Failed. Invalid signature.");
+            return;
+        }
     	
     	
     	LOGGER.info("body: {}", body );
@@ -51,31 +57,41 @@ public class SubscriptionController {
 
     }
     
-    private void verifySignature(String body, String signature) throws Exception{
+    private boolean verifySignature(String body, String signature) throws Exception{
     	
     	LOGGER.info("body: {}", body );
    	 
         LOGGER.info("signature: {}", signature);
         
-        String appSecretAndRequestBody =  appSecret + body;
-        
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        
-        byte[] hashedValue = digest.digest(appSecretAndRequestBody.getBytes(StandardCharsets.UTF_8));
-        
-        String digestValue = DatatypeConverter.printHexBinary(hashedValue);
-        
-    	LOGGER.info("digestValue {} :", digestValue);
+        LOGGER.info("Signature: {}", signature);
 
+        final String expectedDecryptedValue = appSecret + body;
+
+        final String sha256Value = Hashing.sha256().hashString(expectedDecryptedValue, StandardCharsets.UTF_8).toString();
+
+        LOGGER.info("SHA256 Value: {}", sha256Value);
+
+        return StringUtils.equals(sha256Value, signature);
         
-        if(!digestValue.equalsIgnoreCase(signature)){
-        	
-        	LOGGER.info("Invalid Request Signature");
-        	
-        	throw new Exception("Invalid Request Signature");
-        }
-        
-        LOGGER.info("Valid Request Signature");
+//        String appSecretAndRequestBody =  appSecret + body;
+//        
+//        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+//        
+//        byte[] hashedValue = digest.digest(appSecretAndRequestBody.getBytes(StandardCharsets.UTF_8));
+//        
+//        String digestValue = DatatypeConverter.printHexBinary(hashedValue);
+//        
+//    	LOGGER.info("digestValue {} :", digestValue);
+//
+//        
+//        if(!digestValue.equalsIgnoreCase(signature)){
+//        	
+//        	LOGGER.info("Invalid Request Signature");
+//        	
+//        	throw new Exception("Invalid Request Signature");
+//        }
+//        
+//        LOGGER.info("Valid Request Signature");
     }
 }
 
