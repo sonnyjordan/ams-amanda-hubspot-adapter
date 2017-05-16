@@ -42,6 +42,7 @@ public class SubscriptionController {
         }
     	
     	
+    	
     	LOGGER.info("body: {}", body );
       	 
         LOGGER.info("signature: {}", signature);
