@@ -60,9 +60,9 @@ public class SubscriptionController {
     	
     	
     	
-    	HubspotWebhookJsonForm [] hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm[].class, body);
+    	//HubspotWebhookJsonForm [] hubspotWebhookJsonForm = JsonUtil.toObject(HubspotWebhookJsonForm[].class, body);
     	
-    	LOGGER.info("" + hubspotWebhookJsonForm[0].getAppId());
+    	//LOGGER.info("" + hubspotWebhookJsonForm[0].getAppId());
 
     }
     
