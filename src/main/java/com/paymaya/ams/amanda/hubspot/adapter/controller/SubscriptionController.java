@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,10 +27,11 @@ import javax.xml.bind.DatatypeConverter;
 @RestController
 @RequestMapping(value = "/hubspot")
 public class SubscriptionController {
+	
+	@Value("${hubspot.client.secret}")
+    private String hubspotClientSecretKey;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
-
-    String appSecret = "6ff686e7-17f3-4e70-9e72-ac44d09601fc";
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -68,7 +70,7 @@ public class SubscriptionController {
    	         
         LOGGER.info("-------> Signature: {} ------> ", signature);
 
-        final String expectedDecryptedValue = appSecret + body;
+        final String expectedDecryptedValue = hubspotClientSecretKey + body;
 
         final String sha256Value = Hashing.sha256().hashString(expectedDecryptedValue, StandardCharsets.UTF_8).toString();
 
