@@ -3,6 +3,7 @@ package com.paymaya.ams.amanda.hubspot.adapter.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,13 +36,14 @@ public class SubscriptionController {
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
+    public void submitForm(@RequestBody HubspotWebhookJsonForm [] body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	
     	
-    	if (!verifySignature(body, signature)) {
+    	if (!verifySignature(body.toString(), Arrays.toString(body))) {
 
             LOGGER.error("Webhook Request Failed. Invalid signature.");
             return;
+            
         } else {
             LOGGER.info("VALID SIGNATURE.");
 
