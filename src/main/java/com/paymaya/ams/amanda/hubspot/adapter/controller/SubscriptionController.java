@@ -38,8 +38,11 @@ public class SubscriptionController {
     	
     	if (!verifySignature(body, signature)) {
 
-            LOGGER.info("Webhook Request Failed. Invalid signature.");
+            LOGGER.error("Webhook Request Failed. Invalid signature.");
             return;
+        } else {
+            LOGGER.info("VALID SIGNATURE.");
+
         }
     	
     	
@@ -62,16 +65,14 @@ public class SubscriptionController {
     private boolean verifySignature(String body, String signature) throws Exception{
     	
     	LOGGER.info("body: {}", body );
-   	 
-        LOGGER.info("signature: {}", signature);
-        
-        LOGGER.info("Signature: {}", signature);
+   	         
+        LOGGER.info("-------> Signature: {} ------> ", signature);
 
         final String expectedDecryptedValue = appSecret + body;
 
         final String sha256Value = Hashing.sha256().hashString(expectedDecryptedValue, StandardCharsets.UTF_8).toString();
 
-        LOGGER.info("SHA256 Value: {}", sha256Value);
+        LOGGER.info("--------> SHA256 Value: {} ---------> ", sha256Value);
 
         return StringUtils.equals(sha256Value, signature);
         
