@@ -35,11 +35,14 @@ public class SubscriptionController {
     @ResponseBody
     public void submitForm(@RequestBody String body, @RequestHeader(name = "X-HubSpot-Signature") String signature) throws Exception{
     	
+    	
     	if (!verifySignature(body, signature)) {
 
             LOGGER.info("Webhook Request Failed. Invalid signature.");
             return;
         }
+    	
+    	
     	
     	LOGGER.info("body: {}", body );
       	 
